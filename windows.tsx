@@ -1,5 +1,5 @@
 import { createBinding, For, This } from "ags"
-import Bar from "./widgets/bar/Bar.jsx"
+import Bar from "./widgets/bar/Bar"
 import DesktopClock from "./widgets/DesktopClock"
 import app from "ags/gtk4/app"
 import DateMenu from "./widgets/DateMenu"
