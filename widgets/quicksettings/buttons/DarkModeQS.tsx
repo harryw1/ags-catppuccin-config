@@ -6,7 +6,7 @@ export default function DarkModeQS() {
   return (
     <QSButton
       connection={[mode, null, (v) => v === "dark"]}
-      iconName={"weather-clear-night-symbolic"}
+      iconName={"display-brightness-symbolic"}
       label={"Dark Mode"}
       onClicked={() => {
         mode.set(mode.peek() === "light" ? "dark" : "light")

@@ -1,0 +1,96 @@
+@use "sass:color";
+@use "../variables.scss" as *;
+
+.emoji-picker-container {
+    min-width: 560px;
+    min-height: 620px;
+    padding: 12px;
+    background-color: $bg;
+    border: $window-border-width solid $fg;
+    border-radius: $window-border-radius;
+
+    .search-box {
+        margin-bottom: 12px;
+        padding: 4px;
+
+        entry {
+            padding: 12px;
+            border-radius: $window-border-radius;
+            background-color: color.adjust($fg, $alpha: -0.92);
+            border: 1px solid color.adjust($fg, $alpha: -0.85);
+            color: $fg;
+            font-size: 1.1rem;
+
+            &:focus {
+                border-color: $accent;
+                background-color: color.adjust($fg, $alpha: -0.88);
+            }
+        }
+    }
+}
+
+.category-bar {
+    margin-bottom: 16px;
+    padding: 4px;
+
+    .category-button {
+        padding: 8px 16px;
+        border-radius: $window-border-radius;
+        background-color: color.adjust($fg, $alpha: -0.95);
+        border: 1px solid color.adjust($fg, $alpha: -0.9);
+        color: color.adjust($fg, $alpha: -0.3);
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+            background-color: color.adjust($fg, $alpha: -0.85);
+            border-color: color.adjust($fg, $alpha: -0.7);
+            color: $fg;
+            transform: translateY(-1px);
+        }
+
+        &.active {
+            background-color: $accent;
+            border-color: $accent;
+            color: $bg;
+            box-shadow: 0 4px 12px color.adjust($accent, $alpha: -0.7);
+            transform: translateY(0);
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
+    }
+}
+
+.emoji-grid {
+    padding: 8px;
+
+    .emoji-button {
+        padding: 4px;
+        min-width: 72px;
+        min-height: 72px;
+        border-radius: $window-border-radius;
+        background-color: transparent;
+        border: 1px solid transparent;
+        transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+        label {
+            font-size: 3.2rem;
+        }
+
+        &:hover {
+            background-color: color.adjust($fg, $alpha: -0.92);
+            border-color: color.adjust($fg, $alpha: -0.8);
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        &:active {
+            background-color: color.adjust($accent, $alpha: -0.8);
+            transform: scale(0.9);
+            transition-duration: 50ms;
+        }
+    }
+}

@@ -76,12 +76,12 @@ export default class ScreenRecord extends GObject.Object {
 
     ensureDirectory(this.#screenshots)
     if (full) {
-      await sh(`wayshot -f ${file}`)
+      await sh(`grim -g "$(slurp -o)" ${file}`)
     } else {
       const size = await sh("slurp -b#8caaee66 -w 0")
       if (!size) return
 
-      await sh(`wayshot -f ${file} -s "${size}"`)
+      await sh(`grim -g "${size}" ${file}`)
     }
 
     bash(`wl-copy < ${file}`)

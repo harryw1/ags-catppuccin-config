@@ -1,0 +1,52 @@
+@use "sass:color";
+@use "../variables.scss" as *;
+
+.osd-container {
+    padding: 8px 12px;
+    min-width: 200px;
+}
+
+.osd-content {
+    min-height: 32px;
+}
+
+.osd-icon {
+    padding: 6px;
+    border-radius: calc(nth($window-border-radius, 1) / 2);
+    background-color: color.adjust($fg, $alpha: -0.9);
+    color: $accent;
+}
+
+.osd-icon-small {
+    padding: 4px;
+    color: $accent;
+}
+
+.osd-slider {
+    min-width: 120px;
+}
+
+.osd-label {
+    color: color.adjust($fg, $alpha: -0.3);
+    font-size: 0.85em;
+}
+
+.osd-title {
+    color: $fg;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+.osd-artist {
+    color: color.adjust($fg, $alpha: -0.3);
+    font-size: 0.8em;
+}
+
+.osd-cover {
+    border-radius: calc(nth($window-border-radius, 1) / 2);
+}
+
+.osd-status-label {
+    color: $fg;
+    font-weight: 600;
+}

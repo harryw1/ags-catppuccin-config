@@ -36,13 +36,12 @@ export default function Notification({
   showActions?: boolean
 }) {
   return (
-    <Adw.Clamp maximumSize={400}>
+    <Adw.Clamp maximumSize={380}>
       <box
         name={n.id.toString()}
         cssClasses={["window-content", "notification-container", urgency(n)]}
         hexpand={false}
         vexpand={false}
-        widthRequest={400}
       >
         <box orientation={Gtk.Orientation.VERTICAL}>
           <box cssClasses={["header"]}>

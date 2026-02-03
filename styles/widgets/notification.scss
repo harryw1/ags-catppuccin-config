@@ -3,20 +3,21 @@
 @use "../variables" as *;
 
 .notifications-container {
-  min-width: 400px;
+  min-width: 360px;
   min-height: 420px;
+
   separator {
     margin: $window-padding;
     margin-top: 0.3rem;
     margin-bottom: 0.3rem;
   }
+
   .window-header {
     padding: $window-padding;
     padding-bottom: 0;
 
     .dnd {
       margin-right: 0.5rem;
-      background-color: color.adjust($fg, $alpha: -0.9);
       padding: 0 0.6rem;
 
       &.active {
@@ -31,6 +32,7 @@
       &:hover {
         background-color: color.adjust($fg, $alpha: -0.7);
       }
+
       label {
         font-size: 0.95rem;
       }
@@ -45,10 +47,11 @@
     }
   }
 
-  scrolledwindow viewport > box {
+  scrolledwindow viewport>box {
     .not-found label {
       font-size: 1rem;
     }
+
     margin: $window-padding;
     margin-top: 1px;
   }
@@ -106,6 +109,7 @@
 
   .actions {
     margin-top: 0.5rem;
+
     button {
       padding: 0.1rem 0;
       background-color: color.adjust($fg, $alpha: -0.9);

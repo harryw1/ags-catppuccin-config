@@ -1,4 +1,5 @@
 import ScreenRecord from "./utils/screenrecord"
+import { showVolumeOsd, showMediaOsd, showMicOsd } from "./widgets/osd/OSD"
 
 export default function requestHandler(
   request: string[],
@@ -17,6 +18,18 @@ export default function requestHandler(
     case "screenshot-select":
       res("ok")
       screenRecord.screenshot().catch(console.error)
+      break
+    case "osd-volume":
+      res("ok")
+      showVolumeOsd()
+      break
+    case "osd-media":
+      res("ok")
+      showMediaOsd()
+      break
+    case "osd-mic":
+      res("ok")
+      showMicOsd()
       break
     default:
       res("not ok")

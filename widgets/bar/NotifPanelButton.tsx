@@ -32,8 +32,8 @@ function NotifIcon() {
 export default function NotifPanelButton() {
   const apps = new AstalApps.Apps()
   const substitute: Record<string, string> = {
-    "Screen Recorder": "screencast-recorded-symbolic",
-    Screenshot: "screenshot-recorded-symbolic",
+    "Screen Recorder": "media-record-symbolic",
+    Screenshot: "applets-screenshooter-symbolic",
     Hyprpicker: "color-select-symbolic",
   }
 

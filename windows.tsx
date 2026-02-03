@@ -10,6 +10,8 @@ import QSWindow from "./widgets/quicksettings/QSWindow"
 
 import PowerMenu from "./widgets/powermenu/PowerMenu"
 import VerificationWindow from "./widgets/powermenu/VerificationWindow"
+import OSD from "./widgets/osd/OSD"
+import EmojiPicker from "./widgets/EmojiPicker"
 
 export default function windows() {
   const monitors = createBinding(app, "monitors")
@@ -21,6 +23,8 @@ export default function windows() {
   PowerMenu()
   VerificationWindow()
   QSWindow()
+  OSD()
+  EmojiPicker()
 
   return (
     <For each={monitors}>

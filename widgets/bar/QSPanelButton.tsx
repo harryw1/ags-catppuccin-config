@@ -10,22 +10,16 @@ import app from "ags/gtk4/app"
 
 function NetworkIcon() {
   const network = AstalNetwork.get_default()
-
   const primary = createBinding(network, "primary")
-  const wifi = createBinding(network, "wifi")
-  const wired = createBinding(network, "wired")
 
   const icon = createComputed(() => {
     const p = primary()
 
-    // Check connection type
+    // Use static icons since impala/iwd doesn't always update AstalNetwork properly
     if (p == AstalNetwork.Primary.WIRED || p == AstalNetwork.Primary.UNKNOWN) {
-      const dev = wired()
-      // Safely access iconName if device exists
-      return dev ? createBinding(dev, "iconName")() : "network-wired-disconnected-symbolic"
+      return "network-wired-symbolic"
     } else {
-      const dev = wifi()
-      return dev ? createBinding(dev, "iconName")() : "network-wireless-offline-symbolic"
+      return "network-wireless-symbolic"
     }
   })
 
@@ -66,7 +60,7 @@ export default function QSPanelButton() {
             )}
           </With>
         </box>
-        <box visible={isBatteryPresent()}>
+        <box visible={isBatteryPresent}>
           <With value={batteryIcon}>{(icon) => <image iconName={icon} />}</With>
         </box>
         <box>

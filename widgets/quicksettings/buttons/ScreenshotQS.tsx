@@ -16,7 +16,7 @@ export default function ScreenshotQS() {
         })
       }}
       label={"Screenshot"}
-      iconName={"gnome-screenshot-symbolic"}
+      iconName={"camera-photo-symbolic"}
     ></QSButton>
   )
 }

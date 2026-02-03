@@ -62,6 +62,30 @@ function QSButtons() {
 
 function Header() {
   const battery = AstalBattery.get_default()
+  const isPresent = createBinding(battery, "isPresent")
+  const isCharging = createBinding(battery, "charging")
+  const percentage = createBinding(battery, "percentage")
+
+  const icon = createComputed(() => {
+    // If no battery present, we're on AC power (desktop)
+    if (!isPresent()) {
+      return "ac-adapter-symbolic"
+    }
+    // If battery present and charging, show AC icon
+    if (isCharging()) {
+      return "ac-adapter-symbolic"
+    }
+    // Otherwise show battery icon
+    return battery.get_battery_icon_name()
+  })
+
+  const label = createComputed(() => {
+    // If no battery or charging, show AC Power
+    if (!isPresent() || isCharging()) {
+      return "AC Power"
+    }
+    return `${Math.floor(percentage() * 100)}%`
+  })
 
   return (
     <box hexpand={false} cssClasses={["header"]} spacing={6}>
@@ -80,16 +104,18 @@ function Header() {
         }}
       >
         <box spacing={2}>
-          <image
-            iconName={createBinding(battery, "batteryIconName")}
-            iconSize={Gtk.IconSize.NORMAL}
-            cssClasses={["icon"]}
-          />
-          <label
-            label={createBinding(battery, "percentage").as(
-              (p) => `${Math.floor(p * 100)}%`,
+          <With value={icon}>
+            {(i) => (
+              <image
+                iconName={i}
+                iconSize={Gtk.IconSize.NORMAL}
+                cssClasses={["icon"]}
+              />
             )}
-          />
+          </With>
+          <With value={label}>
+            {(l) => <label label={l} />}
+          </With>
         </box>
       </button>
       <button
@@ -153,55 +179,56 @@ function ArrowButton<T extends GObject.Object>({
 function WifiArrowButton() {
   const wifi = AstalNetwork.get_default().wifi
 
-  const getSsid = () => {
-    if (wifi.ssid) return wifi.ssid
-    return "Disconnected"
+  const ssid = createBinding(wifi, "ssid")
+
+  const label = createComputed(() => {
+    return ssid() || "Disconnected"
+  })
+
+  // Poll iwctl for WiFi status since impala/iwd doesn't update AstalNetwork properly
+  const [iwctlIcon, setIwctlIcon] = createState("network-wireless-symbolic")
+
+  const updateWifiStatus = () => {
+    execAsync(["bash", "-c", "iwctl station wlan0 show | grep -E 'Connected network|RSSI'"])
+      .then((output) => {
+        // Parse RSSI (signal strength) from iwctl output
+        const rssiMatch = output.match(/RSSI\s+(-?\d+)/)
+        if (rssiMatch) {
+          const rssi = parseInt(rssiMatch[1])
+          // Convert RSSI to percentage (typical range: -90 to -30 dBm)
+          const percentage = Math.min(100, Math.max(0, (rssi + 90) * (100 / 60)))
+
+          if (percentage > 80) setIwctlIcon("network-wireless-signal-excellent-symbolic")
+          else if (percentage > 60) setIwctlIcon("network-wireless-signal-good-symbolic")
+          else if (percentage > 40) setIwctlIcon("network-wireless-signal-ok-symbolic")
+          else if (percentage > 20) setIwctlIcon("network-wireless-signal-weak-symbolic")
+          else setIwctlIcon("network-wireless-signal-none-symbolic")
+        } else {
+          setIwctlIcon("network-wireless-offline-symbolic")
+        }
+      })
+      .catch(() => {
+        setIwctlIcon("network-wireless-offline-symbolic")
+      })
   }
 
-  const getIcon = () => {
-    if (wifi.ssid) {
-      const s = wifi.strength
-      if (s > 80) return "network-wireless-signal-excellent-symbolic"
-      if (s > 60) return "network-wireless-signal-good-symbolic"
-      if (s > 40) return "network-wireless-signal-fair-symbolic"
-      if (s > 20) return "network-wireless-signal-weak-symbolic"
-      return "network-wireless-signal-none-symbolic"
-    }
-    return wifi.iconName
-  }
-
-  const label = createConnection(
-    getSsid(),
-    [wifi, "notify::state", () => getSsid()],
-    [wifi, "notify::ssid", () => getSsid()],
-  )
-
-  const icon = createConnection(
-    getIcon(),
-    [wifi, "notify::icon-name", () => getIcon()],
-    [wifi, "notify::ssid", () => getIcon()],
-    [wifi, "notify::strength", () => getIcon()],
-  )
+  // Update WiFi status every 5 seconds
+  updateWifiStatus()
+  setInterval(updateWifiStatus, 5000)
 
   return (
-    <box>
-      <With value={label}>
-        {(l) => (
-          <ArrowButton
-            icon={icon}
-            title="Wi-Fi"
-            subtitle={l}
-            onClicked={() => wifi.set_enabled(!wifi.get_enabled())}
-            onArrowClicked={() => {
-              wifi.set_enabled(true)
-              execAsync("kitty -e impala")
-              app.toggle_window(WINDOW_NAME)
-            }}
-            connection={[wifi, "enabled"]}
-          />
-        )}
-      </With>
-    </box>
+    <ArrowButton
+      icon={iwctlIcon}
+      title="Wi-Fi"
+      subtitle={label}
+      onClicked={() => wifi.set_enabled(!wifi.get_enabled())}
+      onArrowClicked={() => {
+        wifi.set_enabled(true)
+        execAsync("kitty -e impala")
+        app.toggle_window(WINDOW_NAME)
+      }}
+      connection={[wifi, "enabled"]}
+    />
   )
 }
 
@@ -211,7 +238,7 @@ function WifiBluetooth() {
   const isConnected = createBinding(bluetooth, "isConnected")
   const deviceConnected = createComputed(() => {
     if (isConnected()) {
-      return bluetooth.devices.find((d) => d.connected)?.name ?? "No device"
+      return bluetooth.devices.find((d: AstalBluetooth.Device) => d.connected)?.name ?? "No device"
     }
     return "No device"
   })
