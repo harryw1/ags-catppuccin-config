@@ -1,5 +1,7 @@
 import PopupWindow from "./common/PopupWindow"
 import GdkPixbuf from "gi://GdkPixbuf"
+import { setWallpaper } from "../utils/wallpaper"
+import { selectFileWithYazi } from "../utils/yazi"
 import options from "../options"
 import { bash, ensureDirectory, sh } from "../utils"
 import GLib from "gi://GLib?version=2.0"
@@ -143,26 +145,16 @@ function WallpaperPicker() {
             <button
               tooltipText={"Change folder"}
               onClicked={() => {
-                app.toggle_window("wallpaperpicker")
-                const folderChooser = new Gtk.FileDialog({
-                  title: "Choose Folder",
-                  initialFolder: Gio.file_new_for_path(wallpaper.folder.peek()),
-                })
-
-                folderChooser.select_folder(null, null, (_, res) => {
-                  try {
-                    const result = folderChooser.select_folder_finish(res)
-                    if (result != null && result.get_path() != null) {
-                      wallpaper.folder.set(result.get_path()!)
-                      app.toggle_window("wallpaperpicker")
-                    }
-                  } catch (e) {
-                    if (`${e}`.toLowerCase().includes("dismissed")) {
-                      app.toggle_window("wallpaperpicker")
-                    } else {
-                      console.error(`${e}`)
-                    }
+                toggleWallpaperPicker()
+                selectFileWithYazi(wallpaper.folder.peek(), (path) => {
+                  // If path is a file, use its parent directory. If it's a directory, use it.
+                  if (GLib.file_test(path, GLib.FileTest.IS_DIR)) {
+                    wallpaper.folder.set(path)
+                  } else {
+                    const parent = Gio.File.new_for_path(path).get_parent()?.get_path()
+                    if (parent) wallpaper.folder.set(parent)
                   }
+                  toggleWallpaperPicker()
                 })
               }}
               iconName={"folder-symbolic"}
@@ -202,27 +194,10 @@ function WallpaperPicker() {
                           file: Gio.file_new_for_path(`${cachePath}/${w}`),
                         }),
                       })
-                                            button.connect("clicked", () => {
-                                              const setWallpaper = async () => {
-                                                  if (GLib.find_program_in_path("hyprctl")) {
-                                                      await sh(["hyprctl", "hyprpaper", "preload", `${path}/${w}`])
-                                                      await sh(["hyprctl", "hyprpaper", "wallpaper", `,${path}/${w}`])
-                                                  } else if (GLib.find_program_in_path("swww")) {
-                                                      await sh(["swww", "img", "--transition-type", "random", `${path}/${w}`])
-                                                  }
-                                              }
-                      
-                                              setWallpaper().then(() => {
-                                                const current = cacheImage(
-                                                  `${path}/${w}`,
-                                                  cachePath,
-                                                  450,
-                                                  `${w.split(".").shift()}_current`,
-                                                )
-                                                GLib.remove(wallpaper.current.peek())
-                                                wallpaper.current.set(current)
-                                              })
-                                            })
+                      button.connect("clicked", () => {
+                        // Use the full path for setting the wallpaper
+                        setWallpaper(`${path}/${w}`).catch(console.error)
+                      })
                       box.append(button)
                     })
                   })

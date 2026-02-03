@@ -12,14 +12,23 @@ function NetworkIcon() {
   const network = AstalNetwork.get_default()
 
   const primary = createBinding(network, "primary")
+  const wifi = createBinding(network, "wifi")
+  const wired = createBinding(network, "wired")
+
   const icon = createComputed(() => {
     const p = primary()
+
+    // Check connection type
     if (p == AstalNetwork.Primary.WIRED || p == AstalNetwork.Primary.UNKNOWN) {
-      return createBinding(network.wired, "iconName")()
+      const dev = wired()
+      // Safely access iconName if device exists
+      return dev ? createBinding(dev, "iconName")() : "network-wired-disconnected-symbolic"
     } else {
-      return createBinding(network.wifi, "iconName")()
+      const dev = wifi()
+      return dev ? createBinding(dev, "iconName")() : "network-wireless-offline-symbolic"
     }
   })
+
   return (
     <box>
       <With value={icon}>{(icon) => <image iconName={icon} />}</With>
