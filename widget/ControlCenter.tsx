@@ -109,7 +109,7 @@ export default function ControlCenter() {
                         active={wifi.as(w => w?.enabled ?? false)}
                         icon={wifi.as(w => w?.iconName ?? "network-wireless-offline-symbolic")}
                         label={wifi.as(w => w?.ssid ?? "WiFi")}
-                        onClick={() => { if (wifi.get()) wifi.get()!.enabled = !wifi.get()!.enabled }}
+                        onClick={() => { if (network.wifi) network.wifi.enabled = !network.wifi.enabled }}
                     />
                     <QuickToggle
                         active={createBinding(bluetooth, "isPowered")}
@@ -122,7 +122,7 @@ export default function ControlCenter() {
                      <QuickToggle
                         active={createBinding(notifd, "dontDisturb")}
                         icon="notifications-disabled-symbolic"
-                        label="DND"
+                        label="No Notif"
                         onClick={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
                     />
                 </box>

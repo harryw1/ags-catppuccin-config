@@ -32,7 +32,6 @@ export default function OSD({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             namespace="osd"
             gdkmonitor={gdkmonitor}
             visible={visible}
-            clickThrough={true}
             anchor={Astal.WindowAnchor.BOTTOM}
             layer={Astal.Layer.OVERLAY}
             marginBottom={100}
