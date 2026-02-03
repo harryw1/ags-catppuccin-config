@@ -222,7 +222,8 @@ function WallpaperPicker() {
                                                 GLib.remove(wallpaper.current.peek())
                                                 wallpaper.current.set(current)
                                               })
-                                            })                      box.append(button)
+                                            })
+                      box.append(button)
                     })
                   })
                 }
