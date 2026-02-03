@@ -6,6 +6,8 @@ import style from "./style.scss"
 import Bar from "./widget/Bar"
 import Applauncher from "./widget/Applauncher"
 import NotificationPopups from "./widget/Notifications"
+import OSD from "./widget/OSD"
+import ControlCenter from "./widget/ControlCenter"
 
 app.start({
   css: style,
@@ -13,6 +15,9 @@ app.start({
   requestHandler(request, res) {
     if (request === "launcher") {
         app.toggle_window("launcher")
+        res("ok")
+    } else if (request === "control-center") {
+        app.toggle_window("control-center")
         res("ok")
     } else {
         res("unknown command")
@@ -27,8 +32,9 @@ app.start({
 
     const monitors = createBinding(app, "monitors")
 
-    // Global launcher instance
+    // Global instances
     Applauncher()
+    ControlCenter()
 
     return (
       <For each={monitors}>
@@ -36,6 +42,7 @@ app.start({
           <This this={app}>
             <Bar gdkmonitor={monitor} />
             <NotificationPopups gdkmonitor={monitor} />
+            <OSD gdkmonitor={monitor} />
           </This>
         )}
       </For>

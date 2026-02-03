@@ -5,9 +5,22 @@ import { createBinding, For } from "ags"
 export default function Workspaces() {
   const hyprland = Hyprland.get_default()
 
+  // Generate 1-5 persistent workspaces
+  const persistent = [1, 2, 3, 4, 5]
+
   return (
     <box class="Workspaces">
-      <For each={createBinding(hyprland, "workspaces")}>
+      {persistent.map(id => (
+          <button
+            class={createBinding(hyprland, "focusedWorkspace").as(fw => 
+              fw?.id === id ? "active" : ""
+            )}
+            onClicked={() => hyprland.dispatch("workspace", id.toString())}
+          >
+            <box class="dot" />
+          </button>
+      ))}
+      <For each={createBinding(hyprland, "workspaces").as(ws => ws.filter(w => w.id > 5))}>
         {(ws) => (
           <button
             class={createBinding(hyprland, "focusedWorkspace").as(fw => 

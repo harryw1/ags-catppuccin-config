@@ -201,3 +201,91 @@ slider {
     border-radius: 50%;
   }
 }
+
+/* OSD */
+.OSD {
+  background-color: transparent;
+}
+
+.osd-box {
+  background-color: $base;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid $surface0;
+  color: $text;
+
+  levelbar {
+    min-height: 8px;
+    trough {
+        border-radius: 4px;
+        background-color: $surface0;
+    }
+    block.filled {
+        border-radius: 4px;
+        background-color: $blue;
+    }
+  }
+}
+
+/* Control Center */
+.ControlCenter {
+  background-color: transparent;
+}
+
+.control-center-content {
+  background-color: $base;
+  border-radius: 16px;
+  border: 1px solid $surface0;
+  padding: 16px;
+  min-width: 360px;
+}
+
+.QuickToggle {
+  background-color: $surface0;
+  border-radius: 20px;
+  padding: 12px;
+  transition: all 0.2s ease;
+
+  &.active {
+    background-color: $blue;
+    color: $base;
+  }
+
+  &:hover {
+    background-color: $surface1;
+  }
+}
+
+.VolumeSlider {
+  background-color: $surface0;
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+.MediaPlayer {
+  background-color: $surface0;
+  border-radius: 12px;
+  padding: 12px;
+
+  .cover {
+    border-radius: 8px;
+  }
+  
+  button {
+    padding: 8px;
+    border-radius: 50%;
+    &:hover {
+      background-color: $surface1;
+    }
+  }
+}
+
+.PowerButton {
+  padding: 12px;
+  border-radius: 12px;
+  background-color: $surface0;
+  &:hover {
+    background-color: $red;
+    color: $base;
+  }
+}
