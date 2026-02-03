@@ -95,6 +95,14 @@ function AppsList() {
             .map((e) => e.toLowerCase())
             .includes(c.class.toLowerCase()),
       )
+      .filter((client) => 
+        application.list.some((e) =>
+          e.entry
+            .split(".desktop")[0]
+            .toLowerCase()
+            .match(client.class.toLowerCase())
+        )
+      )
   })
 
   return (
@@ -127,12 +135,10 @@ function AppsList() {
                 .toLowerCase()
                 .match(client.class.toLowerCase()),
             )
-            if (!app) {
-              return <></>
-            }
+            
             return (
               <AppButton
-                app={app}
+                app={app!}
                 onClicked={() => {
                   client.focus()
                 }}
