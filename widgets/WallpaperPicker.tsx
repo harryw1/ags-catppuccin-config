@@ -202,23 +202,27 @@ function WallpaperPicker() {
                           file: Gio.file_new_for_path(`${cachePath}/${w}`),
                         }),
                       })
-                      button.connect("clicked", () => {
-                        const cmd = GLib.find_program_in_path("swww") 
-                            ? ["swww", "img", "--transition-type", "random", `${path}/${w}`]
-                            : ["hyprctl", "hyprpaper", "wallpaper", `DP-1,${path}/${w}`] // Fallback guess for hyprpaper
-                        
-                        sh(cmd).then(() => {
-                          const current = cacheImage(
-                            `${path}/${w}`,
-                            cachePath,
-                            450,
-                            `${w.split(".").shift()}_current`,
-                          )
-                          GLib.remove(wallpaper.current.peek())
-                          wallpaper.current.set(current)
-                        })
-                      })
-                      box.append(button)
+                                            button.connect("clicked", () => {
+                                              const setWallpaper = async () => {
+                                                  if (GLib.find_program_in_path("hyprctl")) {
+                                                      await sh(["hyprctl", "hyprpaper", "preload", `${path}/${w}`])
+                                                      await sh(["hyprctl", "hyprpaper", "wallpaper", `,${path}/${w}`])
+                                                  } else if (GLib.find_program_in_path("swww")) {
+                                                      await sh(["swww", "img", "--transition-type", "random", `${path}/${w}`])
+                                                  }
+                                              }
+                      
+                                              setWallpaper().then(() => {
+                                                const current = cacheImage(
+                                                  `${path}/${w}`,
+                                                  cachePath,
+                                                  450,
+                                                  `${w.split(".").shift()}_current`,
+                                                )
+                                                GLib.remove(wallpaper.current.peek())
+                                                wallpaper.current.set(current)
+                                              })
+                                            })                      box.append(button)
                     })
                   })
                 }

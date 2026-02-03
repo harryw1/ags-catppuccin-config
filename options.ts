@@ -9,11 +9,24 @@ const options = mkOptions(
     wallpaper: {
       folder: opt(GLib.get_home_dir(), { cached: true }),
       current: opt(
-        GLib.find_program_in_path("swww")
-          ? await execAsync("swww query")
-              .then((out) => out.split("image:")[1].trim())
-              .catch(() => "")
-          : "",
+        await (async () => {
+            try {
+                if (GLib.find_program_in_path("hyprctl")) {
+                    const out = await execAsync("hyprctl hyprpaper wallpaper")
+                    // Output format: "DP-1: /path/to/image.png"
+                    // We just want the path of the first monitor found
+                    const match = out.match(/: (.+)/)
+                    if (match && match[1]) return match[1].trim()
+                }
+                if (GLib.find_program_in_path("swww")) {
+                    const out = await execAsync("swww query")
+                    return out.split("image:")[1].trim()
+                }
+            } catch (err) {
+                console.warn("Could not detect current wallpaper: " + err)
+            }
+            return ""
+        })(),
         { cached: true },
       ),
     },
