@@ -36,13 +36,8 @@ async function initGtk(mode: ThemeMode, reset = false) {
   await writeFileAsync(targetDir, gtkVar.join("\n"))
     .then(() => {
       gsettings.set_string("color-scheme", `prefer-${mode}`)
-      if (reset) {
-        gsettings.reset("gtk-theme")
-      }
-      gsettings.set_string(
-        "gtk-theme",
-        `adw-gtk3${mode === "light" ? "" : "-dark"}`,
-      )
+      gsettings.set_string("gtk-theme", theme.gtk_theme.peek())
+      gsettings.set_string("icon-theme", theme.icon_theme.peek())
     })
     .catch(console.error)
 }
@@ -187,7 +182,7 @@ export async function initHyprlandTheme(mode: ThemeMode) {
     shorthand(window.margin.peek(), 4),
     window,
   )
-  const fgColor = `rgb(${theme[mode].fg.peek().replace("#", "")})`
+  const accentColor = `rgb(${theme[mode].accent.peek().replace("#", "")})`
   const shadowOffset: Record<string, number> = shorthand(
     window.shadow.offset.peek(),
     2,
@@ -201,7 +196,7 @@ export async function initHyprlandTheme(mode: ThemeMode) {
         .map((key) => margin[key] - 2)
         .join(","),
     ),
-    generateConfig("general:col.active_border", fgColor),
+    generateConfig("general:col.active_border", accentColor),
     generateConfig("decoration:rounding", window.border_radius.peek()),
     generateConfig(
       "decoration:shadow:offset",
@@ -209,7 +204,7 @@ export async function initHyprlandTheme(mode: ThemeMode) {
         .map((key) => shadowOffset[key] - 2)
         .join(", "),
     ),
-    generateConfig("decoration:shadow:color", fgColor),
+    generateConfig("decoration:shadow:color", accentColor),
   ]
 
   const hl = AstalHyprland.get_default()

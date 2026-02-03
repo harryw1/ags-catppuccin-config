@@ -7,7 +7,7 @@ import Applauncher from "./widgets/Applauncher"
 import NotificationPopup from "./widgets/notification/NotificationPopup"
 import NotificationWindow from "./widgets/notification/NotificationWindow"
 import QSWindow from "./widgets/quicksettings/QSWindow"
-import { Dock, DockHover } from "./widgets/dock/Dock"
+
 import PowerMenu from "./widgets/powermenu/PowerMenu"
 import VerificationWindow from "./widgets/powermenu/VerificationWindow"
 
@@ -28,8 +28,7 @@ export default function windows() {
         <This this={app}>
           <Bar gdkmonitor={monitor} />
           <NotificationPopup gdkmonitor={monitor} />
-          <DockHover gdkmonitor={monitor} />
-          <Dock gdkmonitor={monitor} />
+
         </This>
       )}
     </For>

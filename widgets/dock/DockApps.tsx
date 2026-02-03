@@ -30,6 +30,8 @@ function AppButton({
     localsend: "send-to",
     "spotify-client": "org.gnome.Lollypop-spotify",
     "org.gnome.Nautilus": "system-file-manager",
+    yazi: "system-file-manager",
+    kitty: "terminal",
   }
 
   const iconName = `${substitute[app.iconName] ?? app.iconName}-symbolic`
@@ -95,7 +97,7 @@ function AppsList() {
             .map((e) => e.toLowerCase())
             .includes(c.class.toLowerCase()),
       )
-      .filter((client) => 
+      .filter((client) =>
         application.list.some((e) =>
           e.entry
             .split(".desktop")[0]
@@ -135,7 +137,7 @@ function AppsList() {
                 .toLowerCase()
                 .match(client.class.toLowerCase()),
             )
-            
+
             return (
               <AppButton
                 app={app!}
@@ -223,7 +225,7 @@ export default function DockApps() {
       <Gtk.Separator orientation={Gtk.Orientation.VERTICAL} />
       <AppButton
         app={{ iconName: "user-trash" } as AstalApps.Application}
-        onClicked={() => exec("nautilus trash:///")}
+        onClicked={() => exec("kitty yazi .local/share/Trash/files")}
         term={""}
       />
     </box>

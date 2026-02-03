@@ -20,7 +20,7 @@ export default function RecordQS() {
           })
         }
       }}
-      iconName={"screencast-recorded-symbolic"}
+      iconName={"media-record-symbolic"}
       label={"Screen Record"}
     />
   )

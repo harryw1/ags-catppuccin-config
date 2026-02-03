@@ -10,29 +10,31 @@ const options = mkOptions(
       folder: opt(GLib.get_home_dir(), { cached: true }),
       current: opt(
         await (async () => {
-            try {
-                if (GLib.find_program_in_path("hyprctl")) {
-                    const out = await execAsync("hyprctl hyprpaper wallpaper")
-                    // Output format: "DP-1: /path/to/image.png"
-                    // We just want the path of the first monitor found
-                    const match = out.match(/: (.+)/)
-                    if (match && match[1]) return match[1].trim()
-                }
-                if (GLib.find_program_in_path("swww")) {
-                    const out = await execAsync("swww query")
-                    return out.split("image:")[1].trim()
-                }
-            } catch (err) {
-                console.warn("Could not detect current wallpaper: " + err)
+          try {
+            if (GLib.find_program_in_path("hyprctl")) {
+              const out = await execAsync("hyprctl hyprpaper wallpaper")
+              // Output format: "DP-1: /path/to/image.png"
+              // We just want the path of the first monitor found
+              const match = out.match(/: (.+)/)
+              if (match && match[1]) return match[1].trim()
             }
-            return ""
+            if (GLib.find_program_in_path("swww")) {
+              const out = await execAsync("swww query")
+              if (out && out.includes("image: ")) {
+                return out.split("image: ")[1].split("\n")[0].trim()
+              }
+            }
+          } catch (err) {
+            console.warn("Could not detect current wallpaper: " + err)
+          }
+          return ""
         })(),
         { cached: true },
       ),
     },
     dock: {
       position: opt("bottom"),
-      pinned: opt(["firefox", "Alacritty", "org.gnome.Nautilus", "localsend"]),
+      pinned: opt(["firefox", "kitty", "yazi", "localsend"]),
     },
     bar: {
       position: opt("top"),
@@ -107,17 +109,19 @@ const options = mkOptions(
           opacity: opt(1),
         },
       },
+      icon_theme: opt("Papirus"),
+      gtk_theme: opt("Catppuccin-Frappe-Standard-Blue-Dark"),
       light: {
-        bg: opt("#fbf1c7"),
-        fg: opt("#3c3836"),
-        accent: opt("#3c3836"),
-        red: opt("#cc241d"),
+        bg: opt("#303446"), // Frappe Base
+        fg: opt("#C6D0F5"), // Frappe Text
+        accent: opt("#8CAAEE"), // Frappe Blue
+        red: opt("#E78284"), // Frappe Red
       },
       dark: {
-        bg: opt("#282828"),
-        fg: opt("#ebdbb2"),
-        accent: opt("#ebdbb2"),
-        red: opt("#cc241d"),
+        bg: opt("#303446"), // Frappe Base
+        fg: opt("#C6D0F5"), // Frappe Text
+        accent: opt("#8CAAEE"), // Frappe Blue
+        red: opt("#E78284"), // Frappe Red
       },
     },
   },

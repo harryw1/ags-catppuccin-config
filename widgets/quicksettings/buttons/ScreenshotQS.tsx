@@ -12,7 +12,7 @@ export default function ScreenshotQS() {
       onClicked={() => {
         app.toggle_window(WINDOW_NAME)
         timeout(200, () => {
-          screenRecord.screenshot()
+          screenRecord.screenshot().catch(console.error)
         })
       }}
       label={"Screenshot"}

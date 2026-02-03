@@ -78,7 +78,7 @@ export default class ScreenRecord extends GObject.Object {
     if (full) {
       await sh(`wayshot -f ${file}`)
     } else {
-      const size = await sh("slurp -b#00000066 -w 0")
+      const size = await sh("slurp -b#8caaee66 -w 0")
       if (!size) return
 
       await sh(`wayshot -f ${file} -s "${size}"`)

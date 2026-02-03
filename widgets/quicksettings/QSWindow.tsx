@@ -7,6 +7,7 @@ import {
   createState,
   With,
 } from "ags"
+import { execAsync } from "ags/process"
 import options from "../../options"
 import { Gtk } from "ags/gtk4"
 import DarkModeQS from "./buttons/DarkModeQS"
@@ -17,10 +18,11 @@ import DontDisturbQS from "./buttons/DontDisturbQS"
 import RecordQS from "./buttons/RecordQS"
 import AstalBattery from "gi://AstalBattery?version=0.1"
 import app from "ags/gtk4/app"
+import GLib from "gi://GLib?version=2.0"
 import GObject from "gi://GObject?version=2.0"
 import AstalNetwork from "gi://AstalNetwork?version=0.1"
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1"
-import BrightnessBox from "./BrightnessBox"
+
 import VolumeBox from "./VolumeBox"
 import PopupWindow from "../common/PopupWindow"
 import BatteryPage from "./pages/BatteryPage"
@@ -151,10 +153,22 @@ function ArrowButton<T extends GObject.Object>({
 function WifiArrowButton() {
   const wifi = AstalNetwork.get_default().wifi
 
-  const getSsid = () =>
-    wifi.state == AstalNetwork.DeviceState.ACTIVATED
-      ? wifi.ssid
-      : AstalNetwork.device_state_to_string()
+  const getSsid = () => {
+    if (wifi.ssid) return wifi.ssid
+    return "Disconnected"
+  }
+
+  const getIcon = () => {
+    if (wifi.ssid) {
+      const s = wifi.strength
+      if (s > 80) return "network-wireless-signal-excellent-symbolic"
+      if (s > 60) return "network-wireless-signal-good-symbolic"
+      if (s > 40) return "network-wireless-signal-fair-symbolic"
+      if (s > 20) return "network-wireless-signal-weak-symbolic"
+      return "network-wireless-signal-none-symbolic"
+    }
+    return wifi.iconName
+  }
 
   const label = createConnection(
     getSsid(),
@@ -162,19 +176,26 @@ function WifiArrowButton() {
     [wifi, "notify::ssid", () => getSsid()],
   )
 
+  const icon = createConnection(
+    getIcon(),
+    [wifi, "notify::icon-name", () => getIcon()],
+    [wifi, "notify::ssid", () => getIcon()],
+    [wifi, "notify::strength", () => getIcon()],
+  )
+
   return (
     <box>
       <With value={label}>
         {(l) => (
           <ArrowButton
-            icon={createBinding(wifi, "iconName")}
+            icon={icon}
             title="Wi-Fi"
             subtitle={l}
             onClicked={() => wifi.set_enabled(!wifi.get_enabled())}
             onArrowClicked={() => {
               wifi.set_enabled(true)
-              wifi.scan()
-              setQsPage("wifi")
+              execAsync("kitty -e impala")
+              app.toggle_window(WINDOW_NAME)
             }}
             connection={[wifi, "enabled"]}
           />
@@ -209,7 +230,10 @@ function WifiBluetooth() {
               title="Bluetooth"
               subtitle={label}
               onClicked={() => bluetooth.toggle()}
-              onArrowClicked={() => console.log("Will add bt page later")}
+              onArrowClicked={() => {
+                execAsync("kitty -e bluetuith")
+                app.toggle_window(WINDOW_NAME)
+              }}
               connection={[btAdapter, "powered"]}
             />
           )}
@@ -231,7 +255,7 @@ function MainPage() {
       <Gtk.Separator />
       <WifiBluetooth />
       <QSButtons />
-      <BrightnessBox />
+
       <VolumeBox />
     </box>
   )
