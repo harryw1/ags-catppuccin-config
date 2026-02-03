@@ -168,6 +168,13 @@ window.Applauncher {
 }
 
 /* Popovers */
+popover {
+  background-color: $base;
+  border-radius: 12px;
+  padding: 8px;
+  border: 1px solid $surface0;
+  color: $text;
+
   button {
     padding: 8px;
     border-radius: 8px;

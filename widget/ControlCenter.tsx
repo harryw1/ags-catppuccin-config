@@ -8,9 +8,9 @@ import Mpris from "gi://AstalMpris"
 import app from "ags/gtk4/app"
 import { execAsync } from "ags/process"
 
-function QuickToggle({ icon, label, active, onClick }: { icon: string, label: string, active: boolean, onClick: () => void }) {
+function QuickToggle({ icon, label, active, onClick, hexpand = true }: { icon: string, label: string, active: boolean, onClick: () => void, hexpand?: boolean }) {
     return (
-        <button class={`QuickToggle ${active ? 'active' : ''}`} onClicked={onClick} hexpand>
+        <button class={`QuickToggle ${active ? 'active' : ''}`} onClicked={onClick} hexpand={hexpand}>
             <box orientation={Gtk.Orientation.HORIZONTAL} spacing={8}>
                 <image iconName={icon} />
                 <label label={label} />
@@ -27,6 +27,8 @@ function VolumeSlider({ device, icon }: { device: Wp.Endpoint, icon: string }) {
             </button>
             <slider
                 hexpand
+                min={0}
+                max={1}
                 value={createBinding(device, "volume")}
                 onChangeValue={({ value }) => device.set_volume(value)}
             />
@@ -120,11 +122,13 @@ export default function ControlCenter() {
                 </box>
                 <box orientation={Gtk.Orientation.HORIZONTAL} spacing={12}>
                      <QuickToggle
+                        hexpand={false}
                         active={createBinding(notifd, "dontDisturb")}
                         icon="notifications-disabled-symbolic"
                         label="No Notif"
                         onClick={() => notifd.set_dont_disturb(!notifd.dontDisturb)}
                     />
+                    <box hexpand /> {/* Spacer */}
                 </box>
 
                 {/* Sliders */}

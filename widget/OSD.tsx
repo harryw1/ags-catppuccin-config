@@ -41,6 +41,8 @@ export default function OSD({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                  <levelbar 
                     valign={Gtk.Align.CENTER}
                     widthRequest={200} 
+                    minValue={0}
+                    maxValue={1}
                     value={createBinding(speaker, "volume")} 
                  />
                  <label label={createBinding(speaker, "volume").as(v => `${Math.floor(v * 100)}%`)} />
