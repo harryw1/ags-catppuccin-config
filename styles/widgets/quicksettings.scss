@@ -3,16 +3,19 @@
 
 .qs-container {
   min-width: 300px;
+  outline: none;
   button {
-    outline-color: $fg;
+    outline: none;
   }
 
   .arrow-button {
     border-radius: $window-border-radius;
     background-color: color.adjust($fg, $alpha: -0.9);
+    outline: none;
 
     > * {
       padding: 0 4px;
+      outline: none;
 
       &:first-child {
         padding: $window-padding;
@@ -21,12 +24,17 @@
     &.active {
       background-color: $accent;
       color: $bg;
+
+      label,
+      image {
+        color: $bg;
+      }
     }
   }
 
   flowbox flowboxchild {
     padding: 0;
-    outline-color: $fg;
+    outline: none;
     &:selected {
       background-color: transparent;
     }
@@ -73,17 +81,22 @@
   .qs-button {
     border-radius: $window-border-radius;
     background-color: color.adjust($fg, $alpha: -0.9);
-    outline-color: $fg;
+    outline: none;
     padding: 1rem 0;
 
     button {
       padding: 1rem 0;
       background-color: transparent;
-      outline-color: $fg;
+      outline: none;
       &:checked {
         color: $bg;
         border-radius: $window-border-radius;
         background-color: $accent;
+
+        label,
+        image {
+          color: $bg;
+        }
       }
     }
 

@@ -7,7 +7,7 @@ const options = mkOptions(
   `${GLib.get_user_config_dir()}/epik-shell/config.json`,
   {
     wallpaper: {
-      folder: opt(GLib.get_home_dir(), { cached: true }),
+      folder: opt(`${GLib.get_home_dir()}/Wallpapers`, { cached: true }),
       current: opt(
         await (async () => {
           try {
@@ -110,7 +110,7 @@ const options = mkOptions(
         },
       },
       icon_theme: opt("Papirus"),
-      gtk_theme: opt("Catppuccin-Frappe-Standard-Blue-Dark"),
+      gtk_theme: opt("catppuccin-frappe-blue-standard+default"),
       light: {
         bg: opt("#303446"), // Frappe Base
         fg: opt("#C6D0F5"), // Frappe Text

@@ -69,13 +69,17 @@ export class Opt<T = unknown> extends Accessor<T> {
       Array.from(this.subscribers).forEach((cb) => cb())
     }
     if (this.cached) {
+      ensureDirectory(cacheDir)
       readFileAsync(`${cacheDir}/options.json`)
         .then((content) => {
-          const cache = JSON.parse(content)
+          const cache = content ? JSON.parse(content) : {}
           cache[this.id] = value
           writeFile(`${cacheDir}/options.json`, JSON.stringify(cache, null, 2))
         })
-        .catch(() => "")
+        .catch(() => {
+          const cache = { [this.id]: value }
+          writeFile(`${cacheDir}/options.json`, JSON.stringify(cache, null, 2))
+        })
     }
   }
 

@@ -70,7 +70,8 @@
     }
 
     &:focus {
-      outline-color: $accent;
+      outline: $window-border-width solid $accent;
+      background-color: color.adjust($fg, $alpha: -0.75);
     }
     &:hover {
       background-color: color.adjust($fg, $alpha: -0.75);
